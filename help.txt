@@ -1,0 +1,18 @@
+before building the final image do aws configure in the image and commit the changes to new image 
+
+to push image to ecr 
+
+login:
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 825146578707.dkr.ecr.us-east-1.amazonaws.com
+
+push:
+
+docker push 825146578707.dkr.ecr.us-east-1.amazonaws.com/sasi:latest
+
+
+creating training job:
+
+aws sagemaker create-training-job --training-job-name mlflow --algorithm-specification TrainingImage=825146578707.dkr.ecr.us-east-1.amazonaws.com/sasi:semi,TrainingInputMode=File  --role-arn arn:aws:iam::825146578707:role/sagemaker --output-data-config S3OutputPath=s3://mlflowroot/root/  --resource-config InstanceType=ml.m4.xlarge,InstanceCount=1,VolumeSizeInGB=100 --stopping-condition MaxRuntimeInSeconds=432000
+
+to set version, input_data environment variables use --environment tag
